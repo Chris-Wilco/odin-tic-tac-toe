@@ -1,0 +1,65 @@
+html {
+}
+
+body {
+    font-family: "Montserrat", "Roboto Condensed", sans-serif;
+    margin: 0px;
+}
+.container {
+    display: grid;
+    grid-template-rows: 1fr 1fr 6fr;
+    grid-template-columns: 1fr;
+    height: 100vh;
+    width: 100vw;
+    /* border: 1px solid black; */
+}
+
+.nav-bar {
+    grid-row: 1 / 2;
+    grid-column: 1 / 2;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 72, 72, 0.882);
+    width: auto;
+    gap: 30px;
+}
+
+.nav-button-text {
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+#turn {
+    grid-row: 2 / 3;
+    place-self: center;
+
+    display: grid;
+    min-height: 80px;
+    min-width: 400px;
+    background-color: rgb(191, 255, 151);
+    place-items: center;
+}
+
+#board {
+    grid-row: 3 / 4;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 20px;
+    place-items: center;
+}
+
+.game-square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(216, 53, 53);
+    border: solid 1px black;
+    height: 200px;
+    width: 200px;
+    font-size: 80px;
+    font-weight: 800;
+}

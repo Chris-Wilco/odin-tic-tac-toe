@@ -1,14 +1,28 @@
-function gridPair(x, y) {
-    this.x = x;
-    this.y = y;
+const newGameButton = document.getElementById("new-game-button");
+newGameButton.addEventListener("click", () => {
+    startNewGame();
+});
 
-    const getX = () => x;
-    const getY = () => y;
+const clearBoardButton = document.getElementById("clear-board-button");
+clearBoardButton.addEventListener("click", () => {
+    clearBoard(document.getElementById("board"));
+    resetBoard();
+});
 
-    return { x, y };
+function startNewGame() {
+    ScreenController();
 }
 
-function gameBoard() {
+function resetBoard() {
+    for (let i = 0; i < 9; i++) {
+        const newDiv = document.createElement("div");
+        newDiv.classList.add("game-square");
+        document.getElementById("board").appendChild(newDiv);
+    }
+    document.getElementById("turn").textContent = "";
+}
+
+function GameBoard() {
     const rows = 3;
     const columns = 3;
     const board = [];
@@ -16,14 +30,14 @@ function gameBoard() {
     for (let i = 0; i < rows; i++) {
         board[i] = [];
         for (let j = 0; j < columns; j++) {
-            board[i].push(GameSquare());
+            board[i].push(GameSquare(i, j));
         }
     }
 
     const getBoard = () => board;
 
     const markSquare = (x, y, player) => {
-        if (board[x][y].getValue() == "-") {
+        if (board[x][y].getValue() === "") {
             board[x][y].markSquare(player.token);
             return true;
         } else {
@@ -50,8 +64,20 @@ function gameBoard() {
     };
 }
 
-function GameSquare() {
-    let value = "-";
+function GameSquare(x, y) {
+    let value = "";
+
+    const xCoord = "" + x;
+    const yCoord = "" + y;
+    /* const getX = () => xCoord;
+    const getY = () => yCoord; */
+
+    const getX = () => {
+        return xCoord;
+    };
+    const getY = () => {
+        return yCoord;
+    };
 
     const markSquare = (playerToken) => {
         value = playerToken;
@@ -62,6 +88,8 @@ function GameSquare() {
     return {
         markSquare,
         getValue,
+        getX,
+        getY,
     };
 }
 
@@ -69,7 +97,7 @@ function GameLogic() {
     playerOneName = "Player One";
     playerTwoName = "Player Two";
 
-    const board = gameBoard();
+    const board = GameBoard();
 
     const players = [
         { name: playerOneName, token: "X" },
@@ -110,7 +138,57 @@ function GameLogic() {
     return {
         playRound,
         getActivePlayer,
+        getBoard: board.getBoard,
     };
 }
 
-const game = GameLogic();
+function ScreenController() {
+    const game = GameLogic();
+
+    const playerTurnDiv = document.getElementById("turn");
+    const boardDiv = document.getElementById("board");
+
+    const updateScreen = () => {
+        clearBoard(boardDiv);
+
+        const board = game.getBoard();
+        const activePlayer = game.getActivePlayer();
+
+        playerTurnDiv.textContent = `${activePlayer.name}'s turn.`;
+
+        board.forEach((row) => {
+            row.forEach((square) => {
+                console.log(
+                    "blah" +
+                        `grid(${square.getX()},${square.getY()}) Value: ${square.getValue()}`
+                );
+                const newSquareId = `grid(${square.getX},${square.getY})`;
+                const newGameSquare = document.createElement("div");
+
+                newGameSquare.classList.add("game-square");
+                newGameSquare.setAttribute("id", newSquareId);
+                newGameSquare.textContent = `${square.getValue()}`;
+                newGameSquare.addEventListener("click", () => {
+                    game.playRound(square.getX(), square.getY());
+                    updateScreen();
+                });
+
+                boardDiv.appendChild(newGameSquare);
+            });
+        });
+
+        /* const clickHandler = (gameSquareClicked) => {
+            game.playRound(gameSquareClicked.getX, gameSquareClicked.getY);
+            updateScreen();
+        }; */
+    };
+
+    updateScreen();
+}
+
+function clearBoard(thisDiv) {
+    const thisNode = thisDiv;
+    while (thisNode.lastElementChild) {
+        thisNode.removeChild(thisNode.lastElementChild);
+    }
+}
